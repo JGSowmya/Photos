@@ -14,20 +14,58 @@ class ViewController: UIViewController,
     UICollectionViewDataSource,
     UICollectionViewDelegateFlowLayout {
 
-    var images = [ImageData]()
+    let url: String = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
+    var imageBookData = ImageBook([:])
     let cellReuseIdentifier = "imageCell"
     let cellsPerRow: CGFloat = 1
-    var titleString = "No Title"
-    
+    let collectionView = UICollectionView.init(frame: CGRect(), collectionViewLayout: UICollectionViewFlowLayout())
+    lazy var refreshControl = UIRefreshControl()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+            
+        loadContent { (status) in
+            guard status else {
+                print("Failed to fetch the data")
+                return
+            }
+            DispatchQueue.main.async {
+                self.loadUI()
+            }
+        }
+    }
+
+    func loadContent(completionHandler: @escaping (_ status: Bool) -> Void) {
+        Alamofire.request(url, method: .get).responseString { response in
+            switch response.result {
+                case .success:
+                    let string = response.result.value
+                    let data = string!.data(using: .utf8)!
+                    do {
+                        if let jsonObject = try JSONSerialization.jsonObject(with: data, options : .allowFragments) as? Dictionary<String,Any>
+                        {
+                            self.imageBookData = ImageBook(jsonObject)
+                            return completionHandler(true)
+
+                        } else {
+                            print("bad json")
+                            return completionHandler(false)
+                        }
+                    } catch let error as NSError {
+                        print("Error: \(error)")
+                        return completionHandler(false)
+                    }
+                case .failure( _):
+                    return completionHandler(false)
+                }
+        }
+
+    }
     
-        
-        images = readAndParseJson() as! [ImageData]
-        
+    func loadUI() {
         let titleLabel = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: self.view.frame.width, height: 100))
         self.view.addSubview(titleLabel)
-        titleLabel.text = titleString
+        titleLabel.text = imageBookData.title
         titleLabel.textAlignment = .center
         titleLabel.textColor = UIColor.white
         titleLabel.backgroundColor = UIColor.init(displayP3Red: 75/255.0, green: 0, blue: 130/255.0, alpha: 1.0)
@@ -50,12 +88,12 @@ class ViewController: UIViewController,
             titleLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
         }
         
+        collectionView.frame = CGRect.init(x: 0,
+                                           y: titleLabel.frame.height,
+                                           width: self.view.frame.width,
+                                           height: self.view.frame.height - titleLabel.frame.height)
         let flowLayout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: CGRect.init(x: 0,
-                                                                 y: titleLabel.frame.height,
-                                                                 width: self.view.frame.width,
-                                                                 height: self.view.frame.height - titleLabel.frame.height),
-                                              collectionViewLayout: flowLayout)
+        collectionView.collectionViewLayout = flowLayout
         collectionView.register(ImageCollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -68,47 +106,44 @@ class ViewController: UIViewController,
         flowLayout.minimumLineSpacing = margin
         flowLayout.sectionInset = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
 
-        collectionView.contentInsetAdjustmentBehavior = .always
+        if #available(iOS 11.0, *) {
+            collectionView.contentInsetAdjustmentBehavior = .always
+        } else {
+            // Fallback on earlier versions
+        }
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+
+        // Add refreh control
+        refreshControl.attributedTitle = NSAttributedString(string: "Fetching data...")
+        refreshControl.addTarget(self, action: #selector(refresh(sender:)), for: UIControl.Event.valueChanged)
         
+        // Add Refresh Control to Table View
+        if #available(iOS 10.0, *) {
+            collectionView.refreshControl = refreshControl
+        } else {
+            collectionView.addSubview(refreshControl)
+        }
     }
     
-    func readAndParseJson() -> [Any] {
-        guard let path = Bundle.main.path(forResource: "AboutCanada", ofType: "json") else {
-            return [Any]()
-        }
-        do {
-            let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
-            let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
-            guard let jsonDictionary = jsonResult as? Dictionary<String, Any>,
-                let rows = jsonDictionary["rows"] as? [Dictionary<String, Any>] else {
-               return [Any]()
+    @objc func refresh(sender: AnyObject) {
+        loadContent { (status) in
+            if (status) {
+                self.collectionView.reloadData()
+                self.refreshControl.endRefreshing()
             }
-            titleString = jsonDictionary["title"] as! String // Assign the title value to global variable
-            
-            var modelArray = [ImageData]()
-            for dic in rows{
-                modelArray.append(ImageData(dic)) // adding now value in Model array
-            }
-            return modelArray
-            
-        } catch {
-            print("Error occured while reading json file")
         }
-        return [Any]()
     }
-
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        images.count
+        return imageBookData.rows.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! ImageCollectionViewCell
-        let imageInfo = images[indexPath.row]
+        let imageInfo = imageBookData.rows[indexPath.row]
         cell.setUp(imageData: imageInfo);
         
-        AF.request(imageInfo.imageHref).responseData { (response) in
+        Alamofire.request(imageInfo.imageHref).responseData { (response) in
             if (response.error == nil) {
                 guard response.data != nil else {
                     cell.imageView.image = UIImage.init(named: "Default.png")
@@ -119,7 +154,7 @@ class ViewController: UIViewController,
             } else {
                 print("Failed to fetch the image at \(indexPath.row)")
             }
-            
+
         }
         return cell
     }
@@ -135,5 +170,5 @@ class ViewController: UIViewController,
 
         return CGSize(width: size, height: size)
     }
-}
 
+}
