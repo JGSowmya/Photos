@@ -11,11 +11,11 @@ import Foundation
 public struct ImageData {
     let title: String?
     let description: String?
-    let imageHref: String?
+    let imageURL: String?
     
     init(_ dictionary: [String: Any]) {
         self.title = dictionary["title"] as? String ?? ""
         self.description = dictionary["description"] as? String ?? ""
-        self.imageHref = dictionary["imageHref"] as? String ?? ""
+        self.imageURL = dictionary["imageHref"] as? String ?? ""
     }
 }

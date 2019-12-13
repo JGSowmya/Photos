@@ -23,7 +23,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         
         // Add Image View
         imageView.frame = CGRect.init(x: 0, y: titleLabel.frame.height + titleLabel.frame.origin.y, width: self.frame.width, height: self.frame.height * 0.6)
-        setImage(url: imageData.imageHref)
+        setImage(url: imageData.imageURL)
         
         // Add Description
         descriptionLabel.frame = CGRect.init(x: 0, y: imageView.frame.height + imageView.frame.origin.y, width: self.frame.width, height: self.frame.height * 0.2)

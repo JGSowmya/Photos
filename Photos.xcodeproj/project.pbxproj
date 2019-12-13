@@ -108,8 +108,8 @@
 			children = (
 				7E534DC1239D4C07002B6DAA /* AppDelegate.swift */,
 				7E534DE5239E59CA002B6DAA /* ImageCollectionViewCell.swift */,
-				7E534DE7239E5ABC002B6DAA /* ImageData.swift */,
 				7E534DE9239EB7F5002B6DAA /* ImageBook.swift */,
+				7E534DE7239E5ABC002B6DAA /* ImageData.swift */,
 				7E534DC5239D4C07002B6DAA /* ViewController.swift */,
 				7E534DC7239D4C07002B6DAA /* Main.storyboard */,
 				7E534DCA239D4C08002B6DAA /* Assets.xcassets */,
