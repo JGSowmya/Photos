@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1A9046BAE5D346150EB1D231 /* Pods_Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6810DC2155C3DE7D7A4883B0 /* Pods_Photos.framework */; };
 		7E534DC2239D4C07002B6DAA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E534DC1239D4C07002B6DAA /* AppDelegate.swift */; };
-		7E534DC4239D4C07002B6DAA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E534DC3239D4C07002B6DAA /* SceneDelegate.swift */; };
 		7E534DC6239D4C07002B6DAA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E534DC5239D4C07002B6DAA /* ViewController.swift */; };
 		7E534DC9239D4C07002B6DAA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E534DC7239D4C07002B6DAA /* Main.storyboard */; };
 		7E534DCB239D4C08002B6DAA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E534DCA239D4C08002B6DAA /* Assets.xcassets */; };
@@ -36,7 +35,6 @@
 		6810DC2155C3DE7D7A4883B0 /* Pods_Photos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Photos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E534DBE239D4C07002B6DAA /* Photos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Photos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E534DC1239D4C07002B6DAA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		7E534DC3239D4C07002B6DAA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		7E534DC5239D4C07002B6DAA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		7E534DC8239D4C07002B6DAA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7E534DCA239D4C08002B6DAA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 			isa = PBXGroup;
 			children = (
 				7E534DC1239D4C07002B6DAA /* AppDelegate.swift */,
-				7E534DC3239D4C07002B6DAA /* SceneDelegate.swift */,
 				7E534DE5239E59CA002B6DAA /* ImageCollectionViewCell.swift */,
 				7E534DE7239E5ABC002B6DAA /* ImageData.swift */,
 				7E534DE9239EB7F5002B6DAA /* ImageBook.swift */,
@@ -313,7 +310,6 @@
 				7E534DEA239EB7F5002B6DAA /* ImageBook.swift in Sources */,
 				7E534DE6239E59CA002B6DAA /* ImageCollectionViewCell.swift in Sources */,
 				7E534DE8239E5ABC002B6DAA /* ImageData.swift in Sources */,
-				7E534DC4239D4C07002B6DAA /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -476,14 +472,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Photos/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.Photos.Photos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -495,14 +491,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Photos/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.Photos.Photos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

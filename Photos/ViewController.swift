@@ -36,6 +36,7 @@ class ViewController: UIViewController,
     }
 
     func loadContent(completionHandler: @escaping (_ status: Bool) -> Void) {
+        
         Alamofire.request(url, method: .get).responseString { response in
             switch response.result {
                 case .success:
@@ -68,7 +69,11 @@ class ViewController: UIViewController,
         titleLabel.text = imageBookData.title
         titleLabel.textAlignment = .center
         titleLabel.textColor = UIColor.white
-        titleLabel.backgroundColor = UIColor.init(displayP3Red: 75/255.0, green: 0, blue: 130/255.0, alpha: 1.0)
+        if #available(iOS 10.0, *) {
+            titleLabel.backgroundColor = UIColor.init(displayP3Red: 75/255.0, green: 0, blue: 130/255.0, alpha: 1.0)
+        } else {
+            // Fallback on earlier versions
+        }
         titleLabel.font = UIFont.boldSystemFont(ofSize: 20.0)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -85,7 +90,11 @@ class ViewController: UIViewController,
             NSLayoutConstraint(item: titleLabel, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1.0, constant: 0).isActive = true
             NSLayoutConstraint(item: titleLabel, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1.0, constant: 0).isActive = true
 
-            titleLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
+            if #available(iOS 9.0, *) {
+                titleLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
+            } else {
+                // Fallback on earlier versions
+            }
         }
         
         collectionView.frame = CGRect.init(x: 0,
