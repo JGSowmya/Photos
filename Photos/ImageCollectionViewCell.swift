@@ -23,7 +23,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         
         // Add Image View
         imageView.frame = CGRect.init(x: 0, y: titleLabel.frame.height + titleLabel.frame.origin.y, width: self.frame.width, height: self.frame.height * 0.6)
-        imageView.image = UIImage.init(named: "Default.png")
+        setImage(url: imageData.imageHref)
         
         // Add Description
         descriptionLabel.frame = CGRect.init(x: 0, y: imageView.frame.height + imageView.frame.origin.y, width: self.frame.width, height: self.frame.height * 0.2)
@@ -35,7 +35,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
         descriptionLabel.numberOfLines = 0
 
         // Add separator line
-        let separatorLine = UIView.init(frame: CGRect.init(x: 0, y: self.frame.height - 0.6, width: self.frame.width, height: 0.6))
+        let separatorLine = UIView.init(frame: CGRect.init(x: 0, y: self.frame.height - 0.6, width: self.frame.width, height: 0.4))
         separatorLine.backgroundColor = UIColor.gray
 
         self.addSubview(titleLabel)
@@ -44,11 +44,18 @@ class ImageCollectionViewCell: UICollectionViewCell {
         self.addSubview(separatorLine)
     }
     
-    func setImage(data: Data) {
-        imageView.image = UIImage.init(data: data)
-        if (imageView.image == nil) {
-            imageView.image = UIImage.init(named: "Default.png")
-        }
+    func setImage(url: String?) {
         imageView.contentMode = .scaleAspectFit
+        guard let url = url,
+            url != "" else {
+            imageView.image = UIImage.init(named: "Default.png")
+            return
+        }
+        let data = try? Data.init(contentsOf: URL.init(string: url)!)
+        guard (data != nil) else {
+            imageView.image = UIImage.init(named: "Default.png")
+            return
+        }
+        imageView.image = UIImage.init(data: data!)
     }
 }

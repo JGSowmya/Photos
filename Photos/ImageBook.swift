@@ -9,7 +9,7 @@
 import Foundation
 
 public struct ImageBook {
-    let title: String
+    let title: String?
     var rows: [ImageData]
     
     init(_ dictionary: [String: Any]) {

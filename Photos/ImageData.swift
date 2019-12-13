@@ -9,9 +9,9 @@
 import Foundation
 
 public struct ImageData {
-    let title: String
-    let description: String
-    let imageHref: String
+    let title: String?
+    let description: String?
+    let imageHref: String?
     
     init(_ dictionary: [String: Any]) {
         self.title = dictionary["title"] as? String ?? ""
