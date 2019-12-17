@@ -16,11 +16,13 @@ class ViewController: UIViewController,
 
     let jsonURL: String = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
     var images: [ImageData]?
-    let cellReuseIdentifier = "imageCell"
-    let cellsPerRow: CGFloat = 1
     var imageCollectionView: UICollectionView?
     lazy var refreshControl = UIRefreshControl()
     var titleLabel: UILabel?
+    let imageCache = NSCache<NSString, NSData>()
+    let cellReuseIdentifier = "imageCell"
+    let cellsPerRow: CGFloat = 1
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -143,7 +145,18 @@ class ViewController: UIViewController,
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! ImageCell
         let imageInfo = images![indexPath.row]
         cell.setUp(imageData: imageInfo);
-        downloadImage(url: imageInfo.imageURL, cell: cell)
+
+        guard let url = imageInfo.imageURL, url != "", url != " " else {
+            cell.setImage(imageData: nil)
+            return cell
+        }
+        let cachedImageData = imageCache.object(forKey: url as NSString)
+        if cachedImageData != nil {
+            print("Cached image")
+            cell.setImage(imageData: (cachedImageData! as Data))
+            return cell
+        }
+        downloadImage(url: url, cell: cell)
         return cell
     }
 
@@ -161,12 +174,7 @@ class ViewController: UIViewController,
         return CGSize(width: size, height: size)
     }
 
-    func downloadImage(url: String?, cell: ImageCell) {
-        guard let url = url else {
-            cell.setImage(imageData: nil)
-            return
-        }
-
+    func downloadImage(url: String, cell: ImageCell) {
         DispatchQueue.global(qos: .userInitiated).async {
             Alamofire.request(url, method: .get).responseData(completionHandler: { (response) in
                 switch response.result {
@@ -176,6 +184,7 @@ class ViewController: UIViewController,
                         print("Invalid image data")
                         return
                     }
+                    self.imageCache.setObject(imageData as NSData, forKey: url as NSString)
                     cell.setImage(imageData: imageData)
                     print("Display image")
                     break
