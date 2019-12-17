@@ -15,7 +15,7 @@ class ViewController: UIViewController,
                                     UICollectionViewDelegateFlowLayout {
 
     let jsonURL: String = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
-    var imageBookData: ImageBook?
+    var images: [ImageData]?
     let cellReuseIdentifier = "imageCell"
     let cellsPerRow: CGFloat = 1
     var imageCollectionView: UICollectionView?
@@ -40,14 +40,13 @@ class ViewController: UIViewController,
                     do {
                         if let jsonObject = try JSONSerialization.jsonObject(
                             with: data,
-                            options : .allowFragments) as? Dictionary<String,Any> {
-                            self.imageBookData = ImageBook(jsonObject)
+                        options : .allowFragments) as? [String: Any] {
+                            let imageBookData = ImageBook(jsonObject)
                             DispatchQueue.main.async {
+                                self.images = imageBookData.rows
+                                self.titleLabel!.text = imageBookData.title // Set the title
                                 self.imageCollectionView?.reloadData()
                                 self.refreshControl.endRefreshing()
-                                if self.imageBookData != nil {
-                                    self.titleLabel!.text = self.imageBookData!.title // Set the title
-                                }
                             }
                         } else {
                             print("bad json")
@@ -132,20 +131,19 @@ class ViewController: UIViewController,
     func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int) -> Int {
-        guard let imageData = imageBookData else {
+        guard let images = images else {
             return 0
         }
-        return (imageData.rows.count)
+        return images.count
     }
     
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! ImageCell
-        let imageInfo = imageBookData!.rows[indexPath.row]
-        DispatchQueue.main.async {
-            cell.setUp(imageData: imageInfo);
-        }
+        let imageInfo = images![indexPath.row]
+        cell.setUp(imageData: imageInfo);
+        downloadImage(url: imageInfo.imageURL, cell: cell)
         return cell
     }
 
@@ -163,4 +161,30 @@ class ViewController: UIViewController,
         return CGSize(width: size, height: size)
     }
 
+    func downloadImage(url: String?, cell: ImageCell) {
+        guard let url = url else {
+            cell.setImage(imageData: nil)
+            return
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            Alamofire.request(url, method: .get).responseData(completionHandler: { (response) in
+                switch response.result {
+                case .success:
+                    guard let imageData = response.data else {
+                        cell.setImage(imageData: nil)
+                        print("Invalid image data")
+                        return
+                    }
+                    cell.setImage(imageData: imageData)
+                    print("Display image")
+                    break
+                case .failure:
+                    cell.setImage(imageData: nil)
+                    print("Failed to fetch image")
+                    break
+                }
+            })
+        }
+    }
 }

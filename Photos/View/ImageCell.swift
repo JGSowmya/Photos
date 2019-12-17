@@ -21,7 +21,6 @@ class ImageCell: UICollectionViewCell {
             y: 0,
             width: self.frame.width,
             height: self.frame.height * 0.6)
-        setImage(url: imageData.imageURL)
 
         // Add Title
         titleLabel.frame = CGRect.init(
@@ -60,18 +59,15 @@ class ImageCell: UICollectionViewCell {
         self.addSubview(separatorLine)
     }
     
-    func setImage(url: String?) {
-        imageView.contentMode = .scaleAspectFit
-        guard let url = url,
-            url != "" else {
-            imageView.image = UIImage.init(named: "Default.png")
-            return
+    func setImage(imageData: Data?) {
+        DispatchQueue.main.async {
+            guard let imageData = imageData else {
+                self.imageView.image = UIImage.init(named: "Default.png")
+                self.imageView.contentMode = .scaleAspectFit
+                return
+            }
+            self.imageView.image = UIImage.init(data: imageData)
+            self.imageView.contentMode = .scaleAspectFit
         }
-        let data = try? Data.init(contentsOf: URL.init(string: url)!)
-        guard (data != nil) else {
-            imageView.image = UIImage.init(named: "Default.png")
-            return
-        }
-        imageView.image = UIImage.init(data: data!)
     }
 }
