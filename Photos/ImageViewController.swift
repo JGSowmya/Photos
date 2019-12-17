@@ -21,7 +21,7 @@ class ViewController: UIViewController,
     var titleLabel: UILabel?
     let imageCache = NSCache<NSString, NSData>()
     let cellReuseIdentifier = "imageCell"
-    let cellsPerRow: CGFloat = 1
+    let cellsPerRow: CGFloat = (UIDevice.current.userInterfaceIdiom == .phone) ? 1 : 2
 
 
     override func viewDidLoad() {

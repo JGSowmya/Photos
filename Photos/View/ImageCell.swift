@@ -30,7 +30,8 @@ class ImageCell: UICollectionViewCell {
             height: self.frame.height * 0.15)
         titleLabel.text = imageData.title
         titleLabel.textColor = UIColor.black
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        var fontSize: CGFloat = (UIDevice.current.userInterfaceIdiom == .phone) ? 18 : 26
+        titleLabel.font = UIFont.boldSystemFont(ofSize: fontSize)
 
         // Add Description
         descriptionLabel.frame = CGRect.init(
@@ -40,7 +41,8 @@ class ImageCell: UICollectionViewCell {
             height: self.frame.height * 0.25)
         descriptionLabel.text = imageData.description
         descriptionLabel.textColor = UIColor.gray
-        descriptionLabel.font = UIFont.italicSystemFont(ofSize: 14)
+        fontSize = (UIDevice.current.userInterfaceIdiom == .phone) ? 14 : 22
+        descriptionLabel.font = UIFont.italicSystemFont(ofSize: fontSize)
         descriptionLabel.textAlignment = NSTextAlignment.left
         descriptionLabel.contentMode = .scaleAspectFit
         descriptionLabel.numberOfLines = 0
