@@ -77,11 +77,15 @@ class ViewController: UIViewController,
             blue: 130/255.0,
             alpha: 1.0)
         titleLabel.font = UIFont.boldSystemFont(ofSize: 20.0)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        titleLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        if #available(iOS 11.0, *) {
+            let guide = view.safeAreaLayoutGuide
+            titleLabel.topAnchor.constraint(equalTo: guide.topAnchor, constant: 0)
+            titleLabel.leftAnchor.constraint(equalTo: guide.leftAnchor).isActive = true
+            titleLabel.widthAnchor.constraint(equalTo: guide.widthAnchor).isActive = true
+            titleLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        } else {
+            // Fallback on earlier versions
+        }
         self.titleLabel = titleLabel
 
         let flowLayout = UICollectionViewFlowLayout()
