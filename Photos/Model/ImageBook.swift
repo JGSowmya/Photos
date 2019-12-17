@@ -20,7 +20,7 @@ public struct ImageBook {
             return
         }
         for item in items {
-            self.rows.append(ImageData(item)) // adding now value in Model array
+            self.rows.append(ImageData(item))
         }
         return
     }
