@@ -63,11 +63,7 @@ class ViewController: UIViewController,
     }
     
     func loadUI() {
-        let titleLabel = UILabel.init(frame: CGRect.init(
-            x: 0,
-            y: 0,
-            width: self.view.frame.width,
-            height: 100))
+        let titleLabel = UILabel()
         self.view.addSubview(titleLabel)
         titleLabel.textAlignment = .center
         titleLabel.textColor = UIColor.white
@@ -77,14 +73,34 @@ class ViewController: UIViewController,
             blue: 130/255.0,
             alpha: 1.0)
         titleLabel.font = UIFont.boldSystemFont(ofSize: 20.0)
+        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         if #available(iOS 11.0, *) {
             let guide = view.safeAreaLayoutGuide
-            titleLabel.topAnchor.constraint(equalTo: guide.topAnchor, constant: 0)
+            titleLabel.topAnchor.constraint(equalTo: guide.topAnchor, constant: 0).isActive = true
             titleLabel.leftAnchor.constraint(equalTo: guide.leftAnchor).isActive = true
             titleLabel.widthAnchor.constraint(equalTo: guide.widthAnchor).isActive = true
-            titleLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
+            titleLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         } else {
-            // Fallback on earlier versions
+            NSLayoutConstraint(item: titleLabel,
+                               attribute: .top,
+                               relatedBy: .equal,
+                               toItem: view, attribute: .top,
+                               multiplier: 1.0, constant: 0).isActive = true
+            NSLayoutConstraint(item: titleLabel,
+                               attribute: .leading,
+                               relatedBy: .equal, toItem: view,
+                               attribute: .leading,
+                               multiplier: 1.0,
+                               constant: 0).isActive = true
+            NSLayoutConstraint(item: titleLabel, attribute: .trailing,
+                               relatedBy: .equal,
+                               toItem: view,
+                               attribute: .trailing,
+                               multiplier: 1.0,
+                               constant: 0).isActive = true
+
+                titleLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         }
         self.titleLabel = titleLabel
 
@@ -97,14 +113,7 @@ class ViewController: UIViewController,
             left: margin,
             bottom: margin,
             right: margin)
-
-        let collectionView = UICollectionView.init(
-            frame: CGRect.init(
-                x: 0,
-                y: titleLabel.frame.height,
-                width: self.view.frame.width,
-                height: self.view.frame.height - titleLabel.frame.height),
-            collectionViewLayout: flowLayout)
+        let collectionView = UICollectionView.init(frame: .zero, collectionViewLayout: flowLayout)
         self.view.addSubview(collectionView)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -112,7 +121,34 @@ class ViewController: UIViewController,
         collectionView.register(
             ImageCell.self,
             forCellWithReuseIdentifier: cellReuseIdentifier)
+
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        if #available(iOS 11.0, *) {
+            collectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0).isActive = true
+            collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            collectionView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        } else {
+            NSLayoutConstraint(item: collectionView,
+                               attribute: .top,
+                               relatedBy: .equal,
+                               toItem: view, attribute: .top,
+                               multiplier: 1.0, constant: 0).isActive = true
+            NSLayoutConstraint(item: collectionView,
+                               attribute: .leading,
+                               relatedBy: .equal, toItem: view,
+                               attribute: .leading,
+                               multiplier: 1.0,
+                               constant: 0).isActive = true
+            NSLayoutConstraint(item: collectionView, attribute: .trailing,
+                               relatedBy: .equal,
+                               toItem: view,
+                               attribute: .trailing,
+                               multiplier: 1.0,
+                               constant: 0).isActive = true
+
+            collectionView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        }
         self.imageCollectionView = collectionView
 
         // Add refreh control to support pull to refresh
