@@ -8,7 +8,8 @@
 
 import UIKit
 import Alamofire
-
+import UserNotifications
+@available(iOS 10.0, *)
 class ViewController: UIViewController,
                                     UICollectionViewDelegate,
                                     UICollectionViewDataSource,
@@ -16,16 +17,35 @@ class ViewController: UIViewController,
 
     let jsonURL: String = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
     var images: [ImageData]?
-    var imageCollectionView: UICollectionView?
+    let imageCollectionView: UICollectionView = {
+
+            let feedLayout = CustomFlowLayout()
+            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: feedLayout)
+             return collectionView
+    }()
     lazy var refreshControl = UIRefreshControl()
     var titleLabel: UILabel?
     let imageCache = NSCache<NSString, NSData>()
     let cellReuseIdentifier = "imageCell"
     let cellsPerRow: CGFloat = (UIDevice.current.userInterfaceIdiom == .phone) ? 1 : 2
+    let separatorDecorationView = "separator"
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let content = UNMutableNotificationContent()
+        content.badge = 1
+        content.title = "Chat Notification"
+        content.subtitle = "Ramesh has sent you something!"
+        content.body = "Hey, Where are you?"
+        content.sound = UNNotificationSound.default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        
+        let request = UNNotificationRequest(identifier: "LocalNotification", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -47,7 +67,7 @@ class ViewController: UIViewController,
                             DispatchQueue.main.async {
                                 self.images = imageBookData.rows
                                 self.titleLabel!.text = imageBookData.title // Set the title
-                                self.imageCollectionView?.reloadData()
+                                self.imageCollectionView.reloadData()
                                 self.refreshControl.endRefreshing()
                             }
                         } else {
@@ -104,52 +124,55 @@ class ViewController: UIViewController,
         }
         self.titleLabel = titleLabel
 
-        let flowLayout = UICollectionViewFlowLayout()
-        let margin: CGFloat = 15.0
-        flowLayout.minimumInteritemSpacing = margin
-        flowLayout.minimumLineSpacing = margin
-        flowLayout.sectionInset = UIEdgeInsets(
-            top: margin,
-            left: margin,
-            bottom: margin,
-            right: margin)
-        let collectionView = UICollectionView.init(frame: .zero, collectionViewLayout: flowLayout)
-        self.view.addSubview(collectionView)
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.backgroundColor = UIColor.white
-        collectionView.register(
+        
+    self.imageCollectionView.collectionViewLayout.register(SeparatorView.self, forDecorationViewOfKind: separatorDecorationView)
+
+//        let flowLayout = CustomFlowLayout()
+//        let margin: CGFloat = 15.0
+//        flowLayout.minimumInteritemSpacing = margin
+//        flowLayout.minimumLineSpacing = margin
+//        flowLayout.sectionInset = UIEdgeInsets(
+//            top: margin,
+//            left: margin,
+//            bottom: margin,
+//            right: margin)
+//        let collectionView = UICollectionView.init(frame: .zero, collectionViewLayout: flowLayout)
+        self.view.addSubview(self.imageCollectionView)
+        imageCollectionView.delegate = self
+        imageCollectionView.dataSource = self
+        imageCollectionView.backgroundColor = UIColor.white
+        imageCollectionView.register(
             ImageCell.self,
             forCellWithReuseIdentifier: cellReuseIdentifier)
 
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        imageCollectionView.translatesAutoresizingMaskIntoConstraints = false
         if #available(iOS 11.0, *) {
-            collectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0).isActive = true
-            collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-            collectionView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            imageCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0).isActive = true
+            imageCollectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            imageCollectionView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+            imageCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         } else {
-            NSLayoutConstraint(item: collectionView,
+            NSLayoutConstraint(item: imageCollectionView,
                                attribute: .top,
                                relatedBy: .equal,
                                toItem: view, attribute: .top,
                                multiplier: 1.0, constant: 0).isActive = true
-            NSLayoutConstraint(item: collectionView,
+            NSLayoutConstraint(item: imageCollectionView,
                                attribute: .leading,
                                relatedBy: .equal, toItem: view,
                                attribute: .leading,
                                multiplier: 1.0,
                                constant: 0).isActive = true
-            NSLayoutConstraint(item: collectionView, attribute: .trailing,
+            NSLayoutConstraint(item: imageCollectionView, attribute: .trailing,
                                relatedBy: .equal,
                                toItem: view,
                                attribute: .trailing,
                                multiplier: 1.0,
                                constant: 0).isActive = true
 
-            collectionView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            imageCollectionView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         }
-        self.imageCollectionView = collectionView
+//        self.imageCollectionView = collectionView
 
         // Add refreh control to support pull to refresh
         refreshControl.attributedTitle = NSAttributedString(string: "Fetching data...")
@@ -160,9 +183,9 @@ class ViewController: UIViewController,
         
         // Add Ref resh Control to Table View
         if #available(iOS 10.0, *) {
-            collectionView.refreshControl = refreshControl
+            imageCollectionView.refreshControl = refreshControl
         } else {
-            collectionView.addSubview(refreshControl)
+            imageCollectionView.addSubview(refreshControl)
         }
     }
     

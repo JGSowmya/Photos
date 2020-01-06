@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1A9046BAE5D346150EB1D231 /* Pods_Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6810DC2155C3DE7D7A4883B0 /* Pods_Photos.framework */; };
+		7E1D771F23B3B21200D1AD04 /* CustomFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E1D771E23B3B21200D1AD04 /* CustomFlowLayout.swift */; };
 		7E534DC2239D4C07002B6DAA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E534DC1239D4C07002B6DAA /* AppDelegate.swift */; };
 		7E534DC6239D4C07002B6DAA /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E534DC5239D4C07002B6DAA /* ImageViewController.swift */; };
 		7E534DC9239D4C07002B6DAA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E534DC7239D4C07002B6DAA /* Main.storyboard */; };
@@ -33,6 +34,7 @@
 /* Begin PBXFileReference section */
 		3DF7CAC879C00AF02B7C67B0 /* Pods_PhotosTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PhotosTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6810DC2155C3DE7D7A4883B0 /* Pods_Photos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Photos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E1D771E23B3B21200D1AD04 /* CustomFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFlowLayout.swift; sourceTree = "<group>"; };
 		7E534DBE239D4C07002B6DAA /* Photos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Photos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E534DC1239D4C07002B6DAA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7E534DC5239D4C07002B6DAA /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				7E534DE5239E59CA002B6DAA /* ImageCell.swift */,
+				7E1D771E23B3B21200D1AD04 /* CustomFlowLayout.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -325,6 +328,7 @@
 				7E534DC2239D4C07002B6DAA /* AppDelegate.swift in Sources */,
 				7E534DEA239EB7F5002B6DAA /* ImageBook.swift in Sources */,
 				7E534DE6239E59CA002B6DAA /* ImageCell.swift in Sources */,
+				7E1D771F23B3B21200D1AD04 /* CustomFlowLayout.swift in Sources */,
 				7E534DE8239E5ABC002B6DAA /* ImageData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -486,6 +490,7 @@
 			baseConfigurationReference = 81DFFB0EDF7FC6F2B50B3EF7 /* Pods-Photos.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Photos/Photos.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Photos/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -505,6 +510,7 @@
 			baseConfigurationReference = 99A709FFDFEA8426B0B150F3 /* Pods-Photos.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Photos/Photos.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Photos/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
