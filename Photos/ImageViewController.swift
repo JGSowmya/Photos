@@ -15,6 +15,7 @@ class ViewController: UIViewController,
                                     UICollectionViewDataSource,
                                     UICollectionViewDelegateFlowLayout {
 
+
     let jsonURL: String = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/facts.json"
     var images: [ImageData]?
     let imageCollectionView: UICollectionView = {
@@ -48,7 +49,7 @@ class ViewController: UIViewController,
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
 
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         loadUI()
         loadContent()
     }
@@ -57,25 +58,21 @@ class ViewController: UIViewController,
         Alamofire.request(jsonURL, method: .get).responseString { response in
             switch response.result {
                 case .success:
-                    let string = response.result.value
-                    let data = string!.data(using: .utf8)!
-                    do {
-                        if let jsonObject = try JSONSerialization.jsonObject(
-                            with: data,
-                        options : .allowFragments) as? [String: Any] {
-                            let imageBookData = ImageBook(jsonObject)
-                            DispatchQueue.main.async {
-                                self.images = imageBookData.rows
-                                self.titleLabel!.text = imageBookData.title // Set the title
+
+                    if let string = response.result.value {
+                        if let jsonData = string.data(using: .utf8) {
+                            let decoder = JSONDecoder()
+                            do {
+                                let imageBookObject = try decoder.decode(ImageBook.self, from: jsonData)
+                                self.images = imageBookObject.rows
+                                self.titleLabel?.text = imageBookObject.title
                                 self.imageCollectionView.reloadData()
-                                self.refreshControl.endRefreshing()
+                            } catch let error as NSError {
+                                print("Error: \(error)")
                             }
-                        } else {
-                            print("bad json")
                         }
-                    } catch let error as NSError {
-                        print("Error: \(error)")
                     }
+
                 case .failure(_):
                     break
             }
@@ -209,11 +206,11 @@ class ViewController: UIViewController,
         let imageInfo = images![indexPath.row]
         cell.setUp(imageData: imageInfo);
 
-        guard let url = imageInfo.imageURL, url != "", url != " " else {
+        guard let url = imageInfo.imageURL else {
             cell.setImage(imageData: nil)
             return cell
         }
-        let cachedImageData = imageCache.object(forKey: url as NSString)
+        let cachedImageData = imageCache.object(forKey: url.absoluteString as NSString)
         if cachedImageData != nil {
             print("Cached image")
             cell.setImage(imageData: (cachedImageData! as Data))
@@ -237,7 +234,7 @@ class ViewController: UIViewController,
         return CGSize(width: size, height: size)
     }
 
-    func downloadImage(url: String, cell: ImageCell) {
+    func downloadImage(url: URL, cell: ImageCell) {
         DispatchQueue.global(qos: .userInitiated).async {
             Alamofire.request(url, method: .get).responseData(completionHandler: { (response) in
                 switch response.result {
@@ -247,7 +244,7 @@ class ViewController: UIViewController,
                         print("Invalid image data")
                         return
                     }
-                    self.imageCache.setObject(imageData as NSData, forKey: url as NSString)
+                    self.imageCache.setObject(imageData as NSData, forKey: url.absoluteString as NSString)
                     cell.setImage(imageData: imageData)
                     print("Display image")
                     break

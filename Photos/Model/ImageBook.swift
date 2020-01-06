@@ -8,20 +8,24 @@
 
 import Foundation
 
-public struct ImageBook {
+struct ImageBook: Codable {
     let title: String?
     var rows: [ImageData]
-    
-    init(_ dictionary: [String: Any]) {
-        self.title = dictionary["title"] as? String ?? ""
-        self.rows = [ImageData]()
 
-        guard let items = dictionary["rows"] as? [Dictionary<String, Any>] else {
-            return
-        }
-        for item in items {
-            self.rows.append(ImageData(item))
-        }
-        return
+    enum CodingKeys: String, CodingKey {
+        case title = "title"
+        case rows = "rows"
+    }
+}
+
+struct ImageData: Codable {
+    let title: String?
+    let description: String?
+    let imageURL: URL?
+
+    enum CodingKeys: String, CodingKey {
+        case title = "title"
+        case description = "description"
+        case imageURL = "imageHref"
     }
 }
