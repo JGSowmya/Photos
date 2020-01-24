@@ -16,15 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     var window: UIWindow?
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("The device token is \(deviceToken)")
+        let token = deviceToken.map {String(format: "%02.2hhx", $0)}.joined()
+        print("The device token is \(deviceToken) and hext string is \(token)")
+        
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to get device token \(error.localizedDescription)")
+        print("Failed to get device token: \(error.localizedDescription)")
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.sound, .alert])
+        completionHandler([.sound, .badge, .alert])
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -37,12 +39,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         UNUserNotificationCenter.current().delegate = self
         if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (result, error) in
-                if (error != nil) {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+                guard granted else {
                     print("Failed to support notification \(error?.localizedDescription ?? "ERROR")")
                     return
                 }
-                print("granted \(result)")
+                print("granted \(granted)")
+                DispatchQueue.main.async {
+                    application.registerForRemoteNotifications()
+                }
             }
         } else {
             // Fallback on earlier versions

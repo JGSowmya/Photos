@@ -47,6 +47,12 @@ class ViewController: UIViewController,
         let request = UNNotificationRequest(identifier: "LocalNotification", content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        
+        let acceptAction = UNNotificationAction(identifier: "accept_ID", title: "Accept", options: [])
+        let declineAction = UNNotificationAction(identifier: "decline_ID", title: "Decline", options: [])
+        
+        let category = UNNotificationCategory(identifier: "category", actions: [acceptAction, declineAction], intentIdentifiers: [])
+        UNUserNotificationCenter.current().setNotificationCategories([category])
     }
 
     override func viewDidAppear(_ animated: Bool) {
